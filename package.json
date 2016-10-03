@@ -1,0 +1,22 @@
+{
+  "name": "backarondzula",
+  "version": "1.0.0",
+  "description": "Karakondzula's backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "*",
+    "express": "*",
+    "file-system": "^2.2.1",
+    "jwt-simple": "^0.5.0",
+    "mongoose": "*",
+    "mongoose-slug-generator": "^1.0.4",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  },
+  "author": "Milos Milutinovic",
+  "license": "MIT"
+}
