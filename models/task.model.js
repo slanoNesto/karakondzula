@@ -77,6 +77,8 @@ function editTask(id, data, user, options, callback) {
         link: data.link,
         image: data.image
     };
+
+    //TODO: implement maximum rating validation
     Task.findOneAndUpdate(query, update, options, callback);
 }
 
@@ -86,6 +88,7 @@ function updateTask(id, data, user, callback) {
         set[param] = data[param];
     }
 
+    //TODO: implement maximum rating validation
     Task.findOneAndUpdate({_id: id, user: user._id}, { $set: set }, { new: true }, callback);
 }
 
