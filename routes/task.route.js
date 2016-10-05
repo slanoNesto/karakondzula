@@ -42,7 +42,7 @@ module.exports = function (app) {
     });
 
     //CREATE NEW
-    app.post(BASE + '/categories/:categoryId/tasks', function(req, res) {
+    app.post(BASE + '/categories/:categoryId/tasks', validateRatingsOnCreate, function(req, res) {
         authService.authorize(req, res, function (user) {
             var categoryId = req.params.categoryId,
                 data = req.body;
@@ -56,23 +56,8 @@ module.exports = function (app) {
         });
     });
 
-    //REPLACE
-    app.put(BASE + '/categories/:categoryId/tasks/:_id', function(req, res) {
-        var id = req.params._id,
-        data = req.body;
-        authService.authorize(req, res, function (user) {
-            Task.editTask(id, data, user, {}, function (err, task) {
-                if (err) {
-                    res.status(500).send(err);
-                    return;
-                }
-                res.json(task);
-            });
-        });
-     });
-
     //UPDATE
-    app.patch(BASE + '/categories/:categoryId/tasks/:_id', function(req, res) {
+    app.patch(BASE + '/categories/:categoryId/tasks/:_id', validateRatingsOnUpdate, function(req, res) {
         var id = req.params._id,
             data = req.body;
         authService.authorize(req, res, function (user) {
@@ -105,5 +90,50 @@ module.exports = function (app) {
             });
         });
     });
+
+    function validateRatingsOnCreate(req, res, next) {
+        var categoryId = req.params.categoryId,
+            data = req.body;
+        authService.authorize(req, res, function (user) {
+            Task.getTasks(categoryId, user, function (err, tasks) {
+                var alreadyAddedRating = tasks.reduce(function (all, item) {
+                    return all + item.rating;
+                }, 0);
+
+                var allowed = 100 - alreadyAddedRating;
+
+                if (alreadyAddedRating === 100) {
+                    return res.status(400).send({message: 'This category already has 100 rating worth of tasks. Consider rearranging your task ratings.'});
+                } else if (alreadyAddedRating + data.rating > 100) {
+                    return res.status(400).send({message: 'You cant add more then 100 rating on one category. For this task you can add a maximum of ' + allowed + ' rating to get to 100'});
+                } else {
+                    next();
+                }
+            });
+        });
+    }
+
+    function validateRatingsOnUpdate(req, res, next) {
+        var data = req.body,
+            taskId = req.params._id,
+            categoryId = req.params.categoryId;
+
+        authService.authorize(req, res, function (user) {
+            Task.getTasks(categoryId, user, function (err, tasks) {
+                var alreadyAddedRating = tasks.reduce(function (all, item) {
+                    if (item._id == taskId) {
+                        item.rating = data.rating || item.rating;
+                    }
+                    return all + item.rating;
+                }, 0);
+
+                if (alreadyAddedRating > 100) {
+                    return res.status(400).send({message: 'You cant add more then 100 rating on one category. With this settings the sum is ' + alreadyAddedRating});
+                } else {
+                    next();
+                }
+            });
+        });
+    }
 
 };

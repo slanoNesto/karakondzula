@@ -51,35 +51,7 @@ function createTask(categoryId, data, user, callback) {
     data.category._id = categoryId;
     data.user._id = user._id;
 
-    getTasks(categoryId, user, function(err, tasks) {
-        var alreadyAddedRating = tasks.reduce(function(all, item) {
-            return all + item.rating;
-        }, 0);
-
-        var allowed = 100 - alreadyAddedRating;
-
-        if (alreadyAddedRating === 100) {
-            return callback({message: 'This category already has 100 rating worth of tasks. Consider rearranging your task ratings.'});
-        } else  if (alreadyAddedRating + data.rating > 100) {
-            return callback({message: 'You cant add more then 100 rating on one category. For this task you can add a maximum of ' + allowed + ' rating to get to 100'});
-        } else {
-            Task.create(data, callback);
-        }
-    });
-}
-
-function editTask(id, data, user, options, callback) {
-    var query = {_id: id, user: user._id};
-    var update = {
-        title: data.title,
-        rating: data.rating,
-        description: data.description,
-        link: data.link,
-        image: data.image
-    };
-
-    //TODO: implement maximum rating validation
-    Task.findOneAndUpdate(query, update, options, callback);
+    Task.create(data, callback);
 }
 
 function updateTask(id, data, user, callback) {
@@ -88,7 +60,6 @@ function updateTask(id, data, user, callback) {
         set[param] = data[param];
     }
 
-    //TODO: implement maximum rating validation
     Task.findOneAndUpdate({_id: id, user: user._id}, { $set: set }, { new: true }, callback);
 }
 
@@ -103,7 +74,6 @@ module.exports = {
     getTasks: getTasks,
     getTask: getTask,
     createTask: createTask,
-    editTask: editTask,
     updateTask: updateTask,
     deleteTask: deleteTask
 };
