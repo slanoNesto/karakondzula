@@ -1,5 +1,5 @@
 var bodyParser = require('body-parser');
-var authService = require('../services/auth.service');
+var authService = require('../services/auth.service.js');
 
 module.exports = function (app) {
 

@@ -2,7 +2,8 @@
 .tmp
 .git
 .idea
-node_modules
+node_modules/
+app/
 .settings
 *.log
 dist/
