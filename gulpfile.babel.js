@@ -7,7 +7,7 @@ import server from 'gulp-live-server';
 
 const paths = {
     js: ['./src/**/*.js'],
-    destination: './app'
+    destination: './.temp'
 };
 
 gulp.task('serve', cb => {
@@ -23,7 +23,7 @@ gulp.task('clean', cb => {
 });
 
 gulp.task('babel', shell.task([
-    'babel src --out-dir app'
+    'babel src --out-dir ' + paths.destination
 ]));
 
 let express;

@@ -5,7 +5,7 @@
   "main": "./app/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./app/app.js"
+    "start": "node ./.temp/app.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",

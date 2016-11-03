@@ -3,7 +3,7 @@
 .git
 .idea
 node_modules/
-app/
+.temp/
 .settings
 *.log
 dist/
